@@ -79,15 +79,15 @@ function App() {
     setBoard(Array(9).fill(null));
     setTurn(TURN.o);
     setWInner(null);
-    window.localStorage.removeItem('board');
-    window.localStorage.removeItem('turn');
+    window.localStorage.removeItem("board");
+    window.localStorage.removeItem("turn");
   };
   return (
     <main className="board">
       <section className="game">
         {board.map((_, index) => {
           return (
-            <Square index={index} updateBoard={updateBoard}>
+            <Square index={index} key={index} updateBoard={updateBoard}>
               {board[index]}
             </Square>
           );
