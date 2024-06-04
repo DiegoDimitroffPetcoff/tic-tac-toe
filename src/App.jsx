@@ -1,7 +1,7 @@
 import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
-import cofetti from "canvas-confetti"
+import cofetti from "canvas-confetti";
 import "./App.css";
 const TURN = { o: "O", x: "X" };
 const WINNERCOMBINATIONS = [
@@ -15,8 +15,15 @@ const WINNERCOMBINATIONS = [
 ];
 
 function App() {
-  const [board, setBoard] = useState(Array(9).fill(null));
-  const [turn, setTurn] = useState(TURN.x);
+  const [board, setBoard] = useState(() => {
+    const boardFromStorage = window.localStorage.getItem("board");
+    if (boardFromStorage) return JSON.parse(boardFromStorage);
+    return Array(9).fill(null);
+  });
+  const [turn, setTurn] = useState(() => {
+    const turnFromSotorage = window.localStorage.getItem("turn");
+    return turnFromSotorage ?? TURN.x;
+  });
   const [winner, setWInner] = useState(null);
 
   const Square = ({ children, isSelected, updateBoard, index }) => {
@@ -40,10 +47,12 @@ function App() {
     setBoard(newBoard);
     const newTurn = turn === TURN.o ? TURN.x : TURN.o;
     setTurn(newTurn);
+    window.localStorage.setItem("board", JSON.stringify(newBoard));
+    window.localStorage.setItem("turn", newTurn);
     const newWinner = checkWInner(newBoard);
     if (newWinner) {
       setWInner(newWinner);
-      cofetti()
+      cofetti();
     } else if (checkEndGame(newBoard)) {
       setWInner(false);
     }
@@ -70,6 +79,8 @@ function App() {
     setBoard(Array(9).fill(null));
     setTurn(TURN.o);
     setWInner(null);
+    window.localStorage.removeItem('board');
+    window.localStorage.removeItem('turn');
   };
   return (
     <main className="board">
