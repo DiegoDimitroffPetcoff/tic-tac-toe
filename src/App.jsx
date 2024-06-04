@@ -1,14 +1,15 @@
 import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
+import cofetti from "canvas-confetti"
 import "./App.css";
-const TURN = { o: "o", x: "x" };
+const TURN = { o: "O", x: "X" };
 const WINNERCOMBINATIONS = [
   [0, 1, 2],
   [3, 4, 5],
   [6, 7, 8],
   [0, 3, 6],
-  [1, 4, 7][(2, 5, 8)],
+  [1, 4, 7],
   [0, 4, 8],
   [2, 4, 6],
 ];
@@ -42,6 +43,9 @@ function App() {
     const newWinner = checkWInner(newBoard);
     if (newWinner) {
       setWInner(newWinner);
+      cofetti()
+    } else if (checkEndGame(newBoard)) {
+      setWInner(false);
     }
   };
 
@@ -57,6 +61,15 @@ function App() {
       }
     }
     return null;
+  };
+  const checkEndGame = (newBoard) => {
+    return newBoard.every((square) => square !== null);
+  };
+
+  const resetGame = () => {
+    setBoard(Array(9).fill(null));
+    setTurn(TURN.o);
+    setWInner(null);
   };
   return (
     <main className="board">
@@ -80,12 +93,13 @@ function App() {
             <header className="win">
               {winner && <Square>{winner}</Square>}
             </header>
-            <footer>
-              <button>Empezar de nuevo</button>
-            </footer>
+            <button onClick={resetGame}>Empezar de nuevo</button>
           </div>
         </section>
       )}
+      <footer>
+        <button onClick={resetGame}>Empezar de nuevo</button>
+      </footer>
     </main>
   );
 }
